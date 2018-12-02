@@ -22,6 +22,14 @@
   color: #61dafb;
 }
 
+.table {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.navBar {
+  margin-bottom: 20px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
