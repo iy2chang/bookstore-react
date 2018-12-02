@@ -3,11 +3,15 @@ import DeleteBook from "./deleteBook";
 import { Link } from "react-router-dom";
 import { getBooks } from "../services/bookServie";
 import { getGenres } from "../services/genreServie";
+import Pagination from "./common/pagination";
+import { paginate } from "../utils/paginate";
 
 class BookList extends Component {
   state = {
     books: [],
-    genres: []
+    genres: [],
+    pageSize: 5,
+    currentPage: 1
   };
 
   async componentDidMount() {
@@ -16,8 +20,18 @@ class BookList extends Component {
     this.setState({ books, genres });
   }
 
+  handlePageChange = page => {
+    this.setState({ currentPage: page });
+  };
+
   render() {
     const { user } = this.props;
+    const { length: count } = this.state.books;
+    const { pageSize, currentPage, books: allBooks } = this.state;
+
+    if (count === 0) return <p>There are no books in the database.</p>;
+
+    const books = paginate(allBooks, currentPage, pageSize);
 
     return (
       <React.Fragment>
@@ -40,7 +54,7 @@ class BookList extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.books.map(book => (
+            {books.map(book => (
               <tr key={book._id}>
                 {user && (
                   <td>
@@ -60,6 +74,12 @@ class BookList extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </React.Fragment>
     );
   }
